@@ -34,7 +34,7 @@ public class GameThread extends Thread {
         while (running) {
             canvas = null;
             try {
-                canvas = this.surfaceHolder.lockCanvas();
+                canvas = gameView.getHolder().lockCanvas();
                 synchronized (surfaceHolder) {
                     this.gameView.testCollision();
                     this.gameView.onDraw(canvas);

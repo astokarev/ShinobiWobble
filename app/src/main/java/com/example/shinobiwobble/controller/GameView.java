@@ -22,13 +22,14 @@ import com.example.shinobiwobble.model.Player;
 import com.example.shinobiwobble.model.Shuriken;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameView extends SurfaceView implements Runnable,  SurfaceHolder.Callback {
     private static final String TAG = GameView.class.getSimpleName();
 
     private GameThread mTread;
-    private Thread ghostThread = new Thread(this);
+    //private Thread ghostThread = new Thread(this);
     private Player player;
     public int count = 0;
 
@@ -50,7 +51,7 @@ public class GameView extends SurfaceView implements Runnable,  SurfaceHolder.Ca
         layout.addView(tw);
 
         mTread = new GameThread(getHolder(), this);
-        ghostThread.start();
+        //ghostThread.start();
         enemies = BitmapFactory.decodeResource(getResources(), R.drawable.enemy);
         //ghosts.add(new Ghost(enemies));
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player), 300, 500, 0);
@@ -84,19 +85,18 @@ public class GameView extends SurfaceView implements Runnable,  SurfaceHolder.Ca
         paint.setTextSize(55);
         canvas.drawText("Score: " + count, 100, 100, paint);
 
-        Iterator<Shuriken> i = shurikens.iterator();
-        while (i.hasNext()) {
-            Shuriken s = i.next();
+        ListIterator<Shuriken> shuIter = shurikens.listIterator();
+        while (shuIter.hasNext()) {
+            Shuriken s = shuIter.next();
             s.draw(canvas);
             //testCollision();
         }
-        Iterator<Ghost> g = ghosts.iterator();
-        while (g.hasNext()) {
-            Ghost ghost = g.next();
-            if (ghost.getX() >= 2000 || ghost.getX() <= 2000) {
+        ListIterator<Ghost> ghostIter = ghosts.listIterator();
+        while (ghostIter.hasNext()) {
+            Ghost ghost = ghostIter.next();
                 ghost.draw(canvas);
                 //testCollision();
-            } else g.remove();
+
 
         }
         //ghost.draw(canvas);
@@ -111,20 +111,20 @@ public class GameView extends SurfaceView implements Runnable,  SurfaceHolder.Ca
      public void run() {
         while (true) {
             testCollision();
-            try {
-                ghostThread.sleep(2000);
+
+                //ghostThread.sleep(2000);
                 ghosts.add(new Ghost(enemies));
-            } catch (InterruptedException e) {
+            /*} catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
     public void testCollision() {
-        Iterator<Shuriken> b = shurikens.iterator();
+        ListIterator<Shuriken> b = shurikens.listIterator();
         while (b.hasNext()) {
             Shuriken balls = b.next();
-            Iterator<Ghost> i = ghosts.iterator();
+            ListIterator<Ghost> i = ghosts.listIterator();
             while (i.hasNext()) {
                 Ghost enemies = i.next();
                 if ((Math.abs(balls.getX() - enemies.getX()) <= (balls.getBitmap().getWidth() + enemies.getBitmap().getWidth()) / 2)
